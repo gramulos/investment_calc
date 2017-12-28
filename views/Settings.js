@@ -1,24 +1,15 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { ScrollView, View, Text } from 'react-native';
+import { layoutStyles } from '../styles';
 
 export default class Settings extends Component {
-  static navigationOptions = {
-    title: 'Settings',
-    headerTintColor: '#fff',
-    headerStyle: { backgroundColor: '#27224d' },
-  };
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Settings 2</Text>
-      </View>
+      <ScrollView style={layoutStyles.mainContainer}>
+        <View style={layoutStyles.container}>
+          <Text>Settings</Text>
+        </View>
+      </ScrollView>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#383365',
-  },
-});

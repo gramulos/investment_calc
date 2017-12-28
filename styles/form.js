@@ -2,13 +2,6 @@ import { StyleSheet, Dimensions } from 'react-native';
 import colors from './colors';
 
 export default StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 20,
-  },
   formInput: {
     width: ((Dimensions.get('window').width - 20) / 2) - 10,
     marginBottom: 10,
@@ -36,5 +29,16 @@ export default StyleSheet.create({
     fontWeight: '700',
     fontSize: 64,
     color: colors.gold,
+  },
+  title: {
+    fontWeight: '100',
+    fontSize: 20,
+    color: colors.white,
+  },
+  titleContainer: {
+    width: Dimensions.get('window').width - 30,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 20,
   },
 });
