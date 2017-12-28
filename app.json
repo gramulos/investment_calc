@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Investment calculator",
+    "description": "This project is really great.",
+    "slug": "investment-calculator",
+    "privacy": "public",
+    "sdkVersion": "24.0.0",
+    "platforms": ["ios", "android"],
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#383365"
+    },
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
