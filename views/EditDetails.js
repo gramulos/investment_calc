@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../actions';
 import { formStyles, layoutStyles, colors } from '../styles';
 import Button from '../components/Button';
 import Switch from '../components/Switch';
@@ -12,7 +15,7 @@ const inputs = [
   { name: 'comission', title: 'Comission', type: 'numeric', width: 1 }
 ];
 
-export default class Settings extends Component {
+class EditDetails extends Component {
   constructor(props) {
     super(props);
     const params = this.props.navigation.state.params;
@@ -56,7 +59,10 @@ export default class Settings extends Component {
       [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
       { cancelable: false }
     );
-  }  
+  }
+  searchItem() {
+    this.props.searchItemInStock(this.state.searchText);
+  }
   renderInput() {
     return inputs.map((input, index) => (
       <View style={input.width === 1 ? formStyles.formInput : [formStyles.formInput, formStyles.formInputLong]} key={`${input.name}_${index}`}>
@@ -81,14 +87,20 @@ export default class Settings extends Component {
     ));
   }
   render() {
-    const { comissionFixed, title, isEditMode } = this.state;
+    const { comissionFixed, title, isEditMode, searchText } = this.state;
+    const itemTitle = this.props.stocks && this.props.stocks.searchResult ? this.props.stocks.searchResult.name : title;
+
     return (
       <ScrollView style={layoutStyles.mainContainer}>
         <View>
-          {!isEditMode && <Search />}
+          {!isEditMode && <Search
+            onChangeText={(value) => this.setState({ searchText: value })}
+            value={searchText}
+            onSearch={this.searchItem.bind(this)}
+          />}
           <View style={layoutStyles.container}>
             <View style={formStyles.titleContainer}>
-              <Text style={formStyles.title}>{title}</Text>
+              <Text style={formStyles.title}>{itemTitle}</Text>
             </View>
             {this.renderInput()}
             <Switch value={comissionFixed} onChangeValue={() => this.setState({ comissionFixed: !comissionFixed })} />
@@ -100,3 +112,8 @@ export default class Settings extends Component {
     );
   }
 }
+
+const mapDispatchToProps = (dispatch) => bindActionCreators(ActionCreators, dispatch);
+const mapStateToProps = ({ stocks }) => ({ stocks });
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditDetails);

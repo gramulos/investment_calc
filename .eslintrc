@@ -3,6 +3,9 @@
   "env": {
     "browser": true
   },
+  "globals": {
+    "__DEV__": true
+  },
   "rules": {
     "max-len": [2, {"code": 256, "tabWidth": 4, "ignoreUrls": true}]
   }
