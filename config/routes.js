@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { StackNavigator } from 'react-navigation';
 
 import Calculator from '../views/Calculator';
-import Settings from '../views/Settings';
+import EditDetails from '../views/EditDetails';
 import Shares from '../views/Shares';
 
 import { layoutStyles } from '../styles';
@@ -23,20 +23,26 @@ export const Routes = StackNavigator({
         <MaterialIcons
           name='settings'
           style={layoutStyles.settingsIcon}
-          onPress={() => navigation.navigate('Settings')}
+          onPress={() => navigation.navigate('EditDetails', { ...navigation.state.params })}
         />)
     }, topNavigationBaseStyle),
   },
-  Settings: {
-    screen: Settings,
-    navigationOptions: Object.assign({}, {
-      title: 'Settings',
+  EditDetails: {
+    screen: EditDetails,
+    navigationOptions: ({ navigation }) => Object.assign({}, {
+      title: navigation.state.params ? 'Edit details' : 'Add new',
     }, topNavigationBaseStyle),
   },
   Shares: {
     screen: Shares,
-    navigationOptions: Object.assign({}, {
+    navigationOptions: ({ navigation }) => Object.assign({}, {
       title: 'Shares',
+      headerRight: (
+        <MaterialIcons
+          name='add'
+          style={layoutStyles.settingsIcon}
+          onPress={() => navigation.navigate('EditDetails')}
+        />)
     }, topNavigationBaseStyle),
   }
 }, {

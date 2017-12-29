@@ -10,10 +10,10 @@ const inputs = [
   { name: 'comission', title: 'Comission' }
 ];
 
-export default class CalcForm extends Component {
+export default class Calculator extends Component {
   constructor(props) {
     super(props);
-    const { buyPrice, sellPrice, count, comission, title, comissionFixed, cryptoCurrency } = this.props.navigation.state.params;
+    const { buyPrice, sellPrice, count, comission, title, comissionFixed, code, cryptoCurrency } = this.props.navigation.state.params;
     this.state = {
       buyPrice,
       sellPrice,
@@ -21,8 +21,26 @@ export default class CalcForm extends Component {
       comission,
       title,
       comissionFixed,
-      cryptoCurrency
+      cryptoCurrency,
+      code
     };
+  }
+  componentDidMount() {
+    this.getData();
+  }
+  getData() {
+    this.setState({ loading: true });
+    return fetch(`https://api.tiingo.com/tiingo/daily/${this.state.code.toLowerCase()}/prices`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Token 529808af478752ce74c895da1bca2ba5d915529e',
+      },
+    })
+    .then(response => response.json())
+    .then((responseJson) => {
+      console.log(responseJson);
+      this.setState({ loading: false });
+    });
   }
   calc() {
     const { sellPrice, count, buyPrice, comission } = this.state;

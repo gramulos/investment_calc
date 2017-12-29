@@ -5,13 +5,11 @@ export default StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop: 20,
-    paddingRight: 10,
-    paddingLeft: 10,
   },
   container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'center',
   },
   settingsIcon: {
     marginRight: 15,

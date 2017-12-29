@@ -9,6 +9,7 @@ export const shares = [
     comission: 50,
     comissionFixed: true,
     cryptoCurrency: false,
+    currency: 'EUR',
   }, {
     id: 2,
     title: 'Aegon NV ADR',
@@ -19,5 +20,6 @@ export const shares = [
     comission: 1,
     comissionFixed: false,
     cryptoCurrency: true,
+    currency: 'EUR',
   }
 ];

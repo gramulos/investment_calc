@@ -8,4 +8,5 @@ export default {
   titleBackground: '#27224d',
   iconColor: '#bbb6e0',
   subtitle: '#797979',
+  black: '#2e2e2e',
 };

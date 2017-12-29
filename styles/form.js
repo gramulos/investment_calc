@@ -8,6 +8,9 @@ export default StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
+  formInputLong: {
+    width: Dimensions.get('window').width - 30,
+  },
   formLabel: {
     color: colors.white,
     fontSize: 16,
@@ -24,7 +27,7 @@ export default StyleSheet.create({
     marginBottom: 16,
   },
   result: {
-    width: Dimensions.get('window').width - 20,
+    width: Dimensions.get('window').width - 30,
     textAlign: 'center',
     fontWeight: '700',
     fontSize: 64,
@@ -40,5 +43,6 @@ export default StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 20,
+    marginTop: 20,
   },
 });

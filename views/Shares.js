@@ -11,7 +11,7 @@ export default class Shares extends Component {
   }
   renderItems() {
     return shares.map((share) => {
-      const icon = share.cryptoCurrency ? <Image source={imgCrypto} style={listStyles.icon} /> : <Image source={imgUsual} style={listStyles.icon} />;
+      const icon = share.cryptoCurrency ? <Image source={imgCrypto} style={listStyles.icon} resizeMode='contain' /> : <Image source={imgUsual} style={listStyles.icon} resizeMode='contain' />;
 
       return (
         <TouchableHighlight key={share.id} style={listStyles.listItem} onPress={() => this.onLearnMore(share)} underlayColor='#ffffff'>
