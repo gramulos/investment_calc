@@ -61,7 +61,7 @@ class EditDetails extends Component {
     );
   }
   searchItem() {
-    this.props.searchItemInStock(this.state.searchText);
+    this.props.searchItemInStock(this.state.searchText.toLowerCase());
   }
   renderInput() {
     return inputs.map((input, index) => (
@@ -88,7 +88,8 @@ class EditDetails extends Component {
   }
   render() {
     const { comissionFixed, title, isEditMode, searchText } = this.state;
-    const itemTitle = this.props.stocks && this.props.stocks.searchResult ? this.props.stocks.searchResult.name : title;
+    const { searchResult } = this.props;
+    const itemTitle = searchResult ? searchResult.name : title;
 
     return (
       <ScrollView style={layoutStyles.mainContainer}>
@@ -114,6 +115,9 @@ class EditDetails extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(ActionCreators, dispatch);
-const mapStateToProps = ({ stocks }) => ({ stocks });
+const mapStateToProps = ({ stocks }) => ({
+  searchResult: stocks.searchResult,
+  isSearching: stocks.isSearching,
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditDetails);

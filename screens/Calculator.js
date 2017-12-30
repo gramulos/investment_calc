@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { ScrollView, View, Text, TextInput } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { ActionCreators } from '../actions';
 import { formStyles, layoutStyles } from '../styles';
 import { calc } from '../helpers/calc';
 
@@ -10,10 +13,10 @@ const inputs = [
   { name: 'comission', title: 'Comission' }
 ];
 
-export default class Calculator extends Component {
+class Calculator extends Component {
   constructor(props) {
     super(props);
-    const { buyPrice, sellPrice, count, comission, title, comissionFixed, code, cryptoCurrency } = this.props.navigation.state.params;
+    const { buyPrice, sellPrice, count, comission, title, comissionFixed, code } = this.props.navigation.state.params;
     this.state = {
       buyPrice,
       sellPrice,
@@ -21,26 +24,11 @@ export default class Calculator extends Component {
       comission,
       title,
       comissionFixed,
-      cryptoCurrency,
       code
     };
   }
   componentDidMount() {
-    this.getData();
-  }
-  getData() {
-    this.setState({ loading: true });
-    return fetch(`https://api.tiingo.com/tiingo/daily/${this.state.code.toLowerCase()}/prices`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Token 529808af478752ce74c895da1bca2ba5d915529e',
-      },
-    })
-    .then(response => response.json())
-    .then((responseJson) => {
-      console.log(responseJson);
-      this.setState({ loading: false });
-    });
+    this.props.getItemRates(this.state.code.toLowerCase());
   }
   calc() {
     const { sellPrice, count, buyPrice, comission } = this.state;
@@ -79,3 +67,11 @@ export default class Calculator extends Component {
     );
   }
 }
+
+const mapDispatchToProps = (dispatch) => bindActionCreators(ActionCreators, dispatch);
+const mapStateToProps = ({ stocks }) => ({
+  itemRates: stocks.itemRates,
+  isLoadingDailyRates: stocks.isLoadingDailyRates,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Calculator);

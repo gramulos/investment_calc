@@ -5,10 +5,27 @@ export default createReducer({}, {
   [types.SEARCH_ITEM_IN_STOCK_REQUEST](state) {
     return Object.assign({}, state, { isSearching: true });
   },
-  [types.SEARCH_ITEM_IN_STOCK_SUCCESS](state, { payload }) {
-    return Object.assign({}, state, { searchResult: payload, isSearching: false });
+  [types.SEARCH_ITEM_IN_STOCK_SUCCESS](state, { searchResult }) {
+    const newState = Object.assign({}, state, { searchResult });
+    delete newState.isSearching;
+    return newState;
   },
-  [types.SEARCH_ITEM_IN_STOCK_ERROR](state, { payload }) {
-    return Object.assign({}, state, { error: payload, isSearching: false });
+  [types.SEARCH_ITEM_IN_STOCK_ERROR](state, { error }) {
+    const newState = Object.assign({}, state, { error });
+    delete newState.isSearching;
+    return newState;
+  },
+  [types.GET_ITEM_RATES_REQUEST](state) {
+    return Object.assign({}, state, { isLoadingDailyRates: true });
+  },
+  [types.GET_ITEM_RATES_SUCCESS](state, { itemRates }) {
+    const newState = Object.assign({}, state, { itemRates });
+    delete newState.isLoadingDailyRates;
+    return newState;
+  },
+  [types.GET_ITEM_RATES_ERROR](state, { error }) {
+    const newState = Object.assign({}, state, { error });
+    delete newState.isLoadingDailyRates;
+    return newState;
   },
 });

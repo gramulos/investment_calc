@@ -3,9 +3,9 @@ import { Platform, StatusBar } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { StackNavigator } from 'react-navigation';
 
-import Calculator from '../views/Calculator';
-import EditDetails from '../views/EditDetails';
-import Shares from '../views/Shares';
+import Calculator from '../screens/Calculator';
+import EditDetails from '../screens/EditDetails';
+import Shares from '../screens/Shares';
 
 import { layoutStyles } from '../styles';
 
