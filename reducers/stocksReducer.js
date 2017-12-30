@@ -28,4 +28,17 @@ export default createReducer({}, {
     delete newState.isLoadingDailyRates;
     return newState;
   },
+  [types.GET_ITEM_RATES_HISTORY_REQUEST](state) {
+    return Object.assign({}, state, { isLoadingRateHistory: true });
+  },
+  [types.GET_ITEM_RATES_HISTORY_SUCCESS](state, { itemRatesHistory }) {
+    const newState = Object.assign({}, state, { itemRatesHistory });
+    delete newState.isLoadingRateHistory;
+    return newState;
+  },
+  [types.GET_ITEM_RATES_HISTORY_ERROR](state, { error }) {
+    const newState = Object.assign({}, state, { error });
+    delete newState.isLoadingRateHistory;
+    return newState;
+  },
 });

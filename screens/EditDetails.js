@@ -7,6 +7,7 @@ import { formStyles, layoutStyles, colors } from '../styles';
 import Button from '../components/Button';
 import Switch from '../components/Switch';
 import Search from '../components/Search';
+import StockItem from '../models/stockItem';
 
 const inputs = [
   { name: 'buyPrice', title: 'Buy price', type: 'numeric', width: 1 },
@@ -45,6 +46,7 @@ class EditDetails extends Component {
     }
   }
   onSave() {
+    console.log(new StockItem({ ...this.state, ...this.props.searchResult }));
     Alert.alert(
       'Success',
       'Changes saved',

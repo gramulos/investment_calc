@@ -53,3 +53,25 @@ const getItemRatesError = (error) => ({
   type: types.GET_ITEM_RATES_ERROR,
   error,
 });
+
+// Get available rates history for specific item by date range
+export const getItemRatesHistory = (ticker, startDate, endDate) => (dispatch) => {
+  dispatch(getItemRatesHistoryRequest());
+  api.get(`${ticker}/prices?startDate=${startDate}&endDate=${endDate}`)
+  .then(({ data }) => dispatch(getItemRatesHistorySuccess(data)))
+  .catch((err) => dispatch(getItemRatesHistoryError(err)));
+};
+
+const getItemRatesHistoryRequest = () => ({
+  type: types.GET_ITEM_RATES_HISTORY_REQUEST,
+});
+
+const getItemRatesHistorySuccess = (itemRatesHistory) => ({
+  type: types.GET_ITEM_RATES_HISTORY_SUCCESS,
+  itemRatesHistory
+});
+
+const getItemRatesHistoryError = (error) => ({
+  type: types.GET_ITEM_RATES_HISTORY_ERROR,
+  error,
+});
