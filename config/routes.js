@@ -4,8 +4,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { StackNavigator } from 'react-navigation';
 
 import Calculator from '../screens/Calculator';
-import EditDetails from '../screens/EditDetails';
 import Shares from '../screens/Shares';
+import Add from '../screens/Add';
+import Edit from '../screens/Edit';
 
 import { layoutStyles } from '../styles';
 
@@ -15,22 +16,28 @@ const topNavigationBaseStyle = {
 };
 
 export const Routes = StackNavigator({
-  Home: {
+  Calculator: {
     screen: Calculator,
     navigationOptions: ({ navigation }) => Object.assign({}, {
-      title: navigation.state.params.code,
+      title: navigation.state.params.ticker,
       headerRight: (
         <MaterialIcons
           name='settings'
           style={layoutStyles.settingsIcon}
-          onPress={() => navigation.navigate('EditDetails', { ...navigation.state.params })}
+          onPress={() => navigation.navigate('Edit', { ...navigation.state.params })}
         />)
     }, topNavigationBaseStyle),
   },
-  EditDetails: {
-    screen: EditDetails,
-    navigationOptions: ({ navigation }) => Object.assign({}, {
-      title: navigation.state.params ? 'Edit details' : 'Add new',
+  Add: {
+    screen: Add,
+    navigationOptions: Object.assign({}, {
+      title: 'Add new',
+    }, topNavigationBaseStyle),
+  },
+  Edit: {
+    screen: Edit,
+    navigationOptions: Object.assign({}, {
+      title: 'Edit details',
     }, topNavigationBaseStyle),
   },
   Shares: {
@@ -41,7 +48,7 @@ export const Routes = StackNavigator({
         <MaterialIcons
           name='add'
           style={layoutStyles.settingsIcon}
-          onPress={() => navigation.navigate('EditDetails')}
+          onPress={() => navigation.navigate('Add')}
         />)
     }, topNavigationBaseStyle),
   }

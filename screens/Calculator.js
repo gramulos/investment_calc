@@ -16,19 +16,19 @@ const inputs = [
 class Calculator extends Component {
   constructor(props) {
     super(props);
-    const { buyPrice, sellPrice, count, comission, title, comissionFixed, code } = this.props.navigation.state.params;
+    const { buyPrice, sellPrice, count, comission, name, comissionFixed, ticker } = this.props.navigation.state.params;
     this.state = {
       buyPrice,
       sellPrice,
       count,
       comission,
-      title,
+      name,
       comissionFixed,
-      code
+      ticker
     };
   }
   componentDidMount() {
-    this.props.getItemRates(this.state.code.toLowerCase());
+    this.props.getItemRates(this.state.ticker.toLowerCase());
   }
   calc() {
     const { sellPrice, count, buyPrice, comission } = this.state;
@@ -45,20 +45,18 @@ class Calculator extends Component {
           showDoneButton
           placeholder='0'
           value={this.state[input.name].toString()}
-          onChangeText={value => {
-            this.setState({ [input.name]: value.length === 0 ? 0 : parseFloat(value) });
-          }}
+          onChangeText={value => this.setState({ [input.name]: value })}
         />
       </View>
     ));
   }
   render() {
-    const { buyPrice, sellPrice, count, comission, comissionFixed, title } = this.state;
+    const { buyPrice, sellPrice, count, comission, comissionFixed, name } = this.state;
     return (
       <ScrollView style={layoutStyles.mainContainer}>
         <View style={layoutStyles.container}>
           <View style={formStyles.titleContainer}>
-            <Text style={formStyles.title}>{title}</Text>
+            <Text style={formStyles.title}>{name}</Text>
           </View>
           {this.renderInput()}
           <Text style={formStyles.result}>{calc({ buyPrice, sellPrice, count, comission, comissionFixed })}</Text>

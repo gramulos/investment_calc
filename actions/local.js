@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native';
 import * as types from './types';
+import StockList from '../models/stockList';
 
 const LOCAL_SHARES_LIST = 'LOCAL_SHARES_LIST';
 
@@ -7,7 +8,11 @@ const LOCAL_SHARES_LIST = 'LOCAL_SHARES_LIST';
 export const getLocalItemList = () => (dispatch) => {
   dispatch(getLocalItemListRequest());
   AsyncStorage.getItem(LOCAL_SHARES_LIST)
-  .then((data) => dispatch(getLocalItemListSuccess(JSON.parse(data))))
+  .then((data) => {
+    const jsonData = JSON.parse(JSON.parse(data));
+    const stockList = new StockList(jsonData.list);
+    dispatch(getLocalItemListSuccess(stockList));
+  })
   .catch((err) => dispatch(getLocalItemListError(err)));
 };
 
@@ -15,9 +20,9 @@ const getLocalItemListRequest = () => ({
   type: types.GET_LOCAL_ITEM_LIST_REQUEST,
 });
 
-const getLocalItemListSuccess = (items) => ({
+const getLocalItemListSuccess = (shares) => ({
   type: types.GET_LOCAL_ITEM_LIST_SUCCESS,
-  items,
+  shares,
 });
 
 const getLocalItemListError = (error) => ({
@@ -28,7 +33,8 @@ const getLocalItemListError = (error) => ({
 // Writing items to device storage
 export const setLocalItemList = (list) => (dispatch) => {
   dispatch(setLocalItemListRequest());
-  AsyncStorage.setItem(LOCAL_SHARES_LIST, JSON.stringify(list))
+  const data = JSON.stringify(list);
+  AsyncStorage.setItem(LOCAL_SHARES_LIST, JSON.stringify(data))
   .then(() => dispatch(setLocalItemListSuccess()))
   .catch((err) => dispatch(setLocalItemListError(err)));
 };

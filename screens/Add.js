@@ -3,11 +3,10 @@ import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
-import { formStyles, layoutStyles, colors } from '../styles';
+import { formStyles, layoutStyles } from '../styles';
 import Button from '../components/Button';
 import Switch from '../components/Switch';
 import Search from '../components/Search';
-import StockItem from '../models/stockItem';
 
 const inputs = [
   { name: 'buyPrice', title: 'Buy price', type: 'numeric', width: 1 },
@@ -19,45 +18,22 @@ const inputs = [
 class EditDetails extends Component {
   constructor(props) {
     super(props);
-    const params = this.props.navigation.state.params;
-
-    if (params) {
-      const { buyPrice, sellPrice, count, comission, title, comissionFixed, cryptoCurrency } = params;
-      this.state = {
-        buyPrice,
-        sellPrice,
-        count,
-        comission,
-        title,
-        comissionFixed,
-        cryptoCurrency,
-        isEditMode: true,
-      };
-    } else {
-      this.state = {
-        buyPrice: 0,
-        sellPrice: 0,
-        count: 0,
-        comission: 0,
-        title: 'Search stock by ticker',
-        comissionFixed: true,
-        cryptoCurrency: false,
-      };
-    }
+    this.state = {
+      buyPrice: 0,
+      sellPrice: 0,
+      count: 0,
+      comission: 0,
+      name: 'Search stock by ticker',
+      comissionFixed: true,
+      cryptoCurrency: false,
+    };
   }
   onSave() {
-    console.log(new StockItem({ ...this.state, ...this.props.searchResult }));
+    const newList = this.props.shares.add({ ...this.state, ...this.props.searchResult });
+    this.props.setLocalItemList(newList);
     Alert.alert(
       'Success',
       'Changes saved',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
-    );
-  }
-  onDelete() {
-    Alert.alert(
-      'Success',
-      'Item deleted',
       [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
       { cancelable: false }
     );
@@ -73,34 +49,28 @@ class EditDetails extends Component {
           underlineColorAndroid='transparent'
           style={formStyles.textbox}
           keyboardType={input.type}
-          placeholderTextColor={colors.white}
+          placeholderTextColor='#a79cc4'
           showDoneButton
           placeholder={input.type === 'numeric' ? '0' : 'Some text'}
           value={this.state[input.name].toString()}
-          onChangeText={value => {
-            if (input.type === 'numeric') {
-              this.setState({ [input.name]: value.length === 0 ? 0 : parseFloat(value) });
-            } else {
-              this.setState({ [input.name]: value });
-            }
-          }}
+          onChangeText={value => this.setState({ [input.name]: value })}
         />
       </View>
     ));
   }
   render() {
-    const { comissionFixed, title, isEditMode, searchText } = this.state;
+    const { comissionFixed, name, searchText } = this.state;
     const { searchResult } = this.props;
-    const itemTitle = searchResult ? searchResult.name : title;
+    const itemTitle = searchResult ? searchResult.name : name;
 
     return (
       <ScrollView style={layoutStyles.mainContainer}>
         <View>
-          {!isEditMode && <Search
+          <Search
             onChangeText={(value) => this.setState({ searchText: value })}
             value={searchText}
             onSearch={this.searchItem.bind(this)}
-          />}
+          />
           <View style={layoutStyles.container}>
             <View style={formStyles.titleContainer}>
               <Text style={formStyles.title}>{itemTitle}</Text>
@@ -108,7 +78,6 @@ class EditDetails extends Component {
             {this.renderInput()}
             <Switch value={comissionFixed} onChangeValue={() => this.setState({ comissionFixed: !comissionFixed })} />
             <Button onPress={this.onSave.bind(this)} text='Save' type='green' />
-            {isEditMode && <Button onPress={this.onDelete.bind(this)} text='Delete' type='red' />}
           </View>
         </View>
       </ScrollView>
@@ -117,7 +86,8 @@ class EditDetails extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(ActionCreators, dispatch);
-const mapStateToProps = ({ stocks }) => ({
+const mapStateToProps = ({ stocks, local }) => ({
+  shares: local.shares,
   searchResult: stocks.searchResult,
   isSearching: stocks.isSearching,
 });

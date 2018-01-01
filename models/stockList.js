@@ -1,20 +1,26 @@
 import StockItem from './stockItem';
 
 export default class StockList {
-  constructor(items) {
-    if (items && items.length > 0) {
-      this.items = items.forEach(item => new StockItem(item));
+  constructor(list) {
+    if (list instanceof Array) {
+      this.list = list.map(item => new StockItem(item));
+    } else {
+      this.list = [];
     }
   }
   toString() {
-    return JSON.stringify(this.items);
+    return JSON.stringify(this.list);
   }
   delete(id) {
-    this.items = this.items.filter(item => item.id !== id);
+    this.list = this.list.filter(item => item.id !== id);
     return this;
   }
   add(item) {
-    this.items.push(new StockItem(item));
+    let newItem = item;
+    if (!(item instanceof StockItem)) {
+      newItem = new StockItem(item);
+    }
+    this.list.push(newItem);
     return this;
   }
 }

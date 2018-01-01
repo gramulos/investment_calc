@@ -5,8 +5,8 @@ export default createReducer({}, {
   [types.GET_LOCAL_ITEM_LIST_REQUEST](state) {
     return Object.assign({}, state, { isReadingStorage: true });
   },
-  [types.GET_LOCAL_ITEM_LIST_SUCCESS](state, { items }) {
-    const newState = Object.assign({}, state, { items });
+  [types.GET_LOCAL_ITEM_LIST_SUCCESS](state, { shares }) {
+    const newState = Object.assign({}, state, { shares });
     delete newState.isReadingStorage;
     return newState;
   },
