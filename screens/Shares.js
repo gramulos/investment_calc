@@ -33,7 +33,7 @@ class Shares extends Component {
   render() {
     return (
       <ScrollView style={layoutStyles.mainContainer}>
-        <View style={layoutStyles.container}>
+        <View style={[layoutStyles.container, listStyles.container]}>
           {this.renderItems()}
         </View>
       </ScrollView>

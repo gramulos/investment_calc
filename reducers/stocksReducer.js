@@ -1,12 +1,15 @@
 import createReducer from '../helpers/createReducer';
 import * as types from '../actions/types';
+import { cleanText } from '../helpers/helpers';
 
 export default createReducer({}, {
   [types.SEARCH_ITEM_IN_STOCK_REQUEST](state) {
     return Object.assign({}, state, { isSearching: true });
   },
   [types.SEARCH_ITEM_IN_STOCK_SUCCESS](state, { searchResult }) {
-    const newState = Object.assign({}, state, { searchResult });
+    const cleanedResult = searchResult;
+    cleanedResult.name = cleanText(cleanedResult.name);
+    const newState = Object.assign({}, state, { searchResult: cleanedResult });
     delete newState.isSearching;
     return newState;
   },

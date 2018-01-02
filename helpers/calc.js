@@ -1,4 +1,8 @@
 export const calc = ({ buyPrice, sellPrice, count, comission, comissionFixed }) => {
+  if (count === '0' || count === '') {
+    return 0;
+  }
+
   const income = (sellPrice * count) - (buyPrice * count);
   let result;
 

@@ -42,11 +42,11 @@ export default class Button extends Component {
 const getGradient = (type) => {
   switch (type) {
     case 'green':
-      return ['#288fa4', '#00ffa1'];
+      return ['#0bc27e', '#16c987'];
     case 'red':
-      return ['#9e237c', '#ff0054'];
+      return ['#cb4646', '#e94164'];
     case 'blue':
-      return ['#4437d1', '#00c2ff'];
+      return ['#1070d7', '#0d79d9'];
     case 'yellow':
       return ['#d17337', '#f9e42c'];
     default:
@@ -56,10 +56,10 @@ const getGradient = (type) => {
 
 const styles = StyleSheet.create({
   button: {
-    width: Dimensions.get('window').width - 30,
+    width: Dimensions.get('window').width - 20,
     alignItems: 'center',
     padding: 15,
-    borderRadius: 30,
+    borderRadius: 3,
     marginLeft: 5,
     marginRight: 5,
     marginBottom: 20,
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     backgroundColor: 'transparent',
     fontSize: 20,
-    fontWeight: '100',
+    fontFamily: 'Roboto-300',
   },
 });

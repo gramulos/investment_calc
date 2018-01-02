@@ -2,6 +2,9 @@ import { StyleSheet, Dimensions } from 'react-native';
 import colors from './colors';
 
 export default StyleSheet.create({
+  container: {
+    marginTop: 10,
+  },
   icon: {
     position: 'absolute',
     width: 70,
@@ -10,25 +13,29 @@ export default StyleSheet.create({
     right: 0,
   },
   title: {
-    fontSize: 18,
-    lineHeight: 22,
-    fontWeight: '100',
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#2d2d2d',
+    fontFamily: 'Roboto-600',
     marginBottom: 12,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 12,
     lineHeight: 18,
-    color: colors.subtitle,
+    color: '#9a9a9a',
+    fontFamily: 'Roboto-500',
   },
   listItem: {
     width: Dimensions.get('window').width - 20,
     height: 110,
     backgroundColor: colors.white,
-    marginBottom: 20,
-    borderLeftWidth: 3,
-    borderLeftColor: colors.blue,
-    borderBottomWidth: 0,
-    borderTopWidth: 0,
     padding: 20,
+    borderRadius: 3,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 1,
+    marginBottom: 10,
   },
 });

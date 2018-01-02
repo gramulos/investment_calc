@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import colors from './colors';
 
 export default StyleSheet.create({
@@ -15,5 +15,24 @@ export default StyleSheet.create({
     marginRight: 15,
     fontSize: 26,
     color: colors.white,
+  },
+  titleContainer: {
+    width: Dimensions.get('window').width,
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  title: {
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'center',
+    color: '#797979',
+    fontFamily: 'Roboto-500',
+  },
+  subtitle: {
+    fontSize: 14,
+    lineHeight: 18,
+    textAlign: 'center',
+    color: '#797979',
+    fontFamily: 'Roboto-500i',
   },
 });

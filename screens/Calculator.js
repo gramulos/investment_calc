@@ -30,10 +30,6 @@ class Calculator extends Component {
   componentDidMount() {
     this.props.getItemRates(this.state.ticker.toLowerCase());
   }
-  calc() {
-    const { sellPrice, count, buyPrice, comission } = this.state;
-    return Math.round((sellPrice * count) - (buyPrice * count) - comission) / 100;
-  }
   renderInput() {
     return inputs.map((input, index) => (
       <View style={formStyles.formInput} key={`${input.name}_${index}`}>
@@ -45,7 +41,7 @@ class Calculator extends Component {
           showDoneButton
           placeholder='0'
           value={this.state[input.name].toString()}
-          onChangeText={value => this.setState({ [input.name]: value })}
+          onChangeText={value => this.setState({ [input.name]: value.trim() })}
         />
       </View>
     ));
