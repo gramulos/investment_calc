@@ -44,7 +44,7 @@ export default class InlineSearch extends Component {
           style={styles.input}
           onSubmitEditing={onSearch}
         />
-        <TouchableHighlight style={isLoading ? [styles.searchBtn, styles.searchBtnDisabled] : styles.searchBtn} onPress={isLoading ? onSearch : () => null} underlayColor={'#0667d0'}>
+        <TouchableHighlight style={isLoading ? [styles.searchBtn, styles.searchBtnDisabled] : styles.searchBtn} onPress={!isLoading ? onSearch : () => null} underlayColor={'#0667d0'}>
           <View>
             {isLoading ? <Progress.CircleSnail size={24} indeterminate thickness={1} duration={600} color='#0667d0' /> : <Ionicons name='ios-search' style={styles.icon} />}
           </View>

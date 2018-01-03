@@ -23,3 +23,7 @@ export const shares = [
     currency: 'EUR',
   }
 ];
+
+export const COMISSION_NONE = 'COMISSION_NONE';
+export const COMISSION_FIXED = 'COMISSION_FIXED';
+export const COMISSION_PERCENT = 'COMISSION_PERCENT';

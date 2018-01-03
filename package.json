@@ -11,6 +11,7 @@
     "prop-types": "^15.6.0",
     "react": "16.0.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-24.0.0.tar.gz",
+    "react-native-chooser": "^1.7.0",
     "react-native-customisable-switch": "^0.1.0",
     "react-native-elements": "^0.18.5",
     "react-native-keyboard-manager": "^4.0.13-4",

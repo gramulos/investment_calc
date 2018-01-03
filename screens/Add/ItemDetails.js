@@ -6,13 +6,12 @@ import { NavigationActions } from 'react-navigation';
 import { ActionCreators } from '../../actions';
 import { formStyles, layoutStyles } from '../../styles';
 import Button from '../../components/Button';
-import Switch from '../../components/Switch';
+import InputWithTypes from '../../components/InputWithTypes';
 
 const inputs = [
-  { name: 'buyPrice', title: 'Buy price', type: 'numeric', width: 1 },
-  { name: 'sellPrice', title: 'Sell price', type: 'numeric', width: 1 },
-  { name: 'count', title: 'Count', type: 'numeric', width: 1 },
-  { name: 'comission', title: 'Comission', type: 'numeric', width: 1 }
+  { name: 'buyPrice', title: 'Buy', type: 'numeric' },
+  { name: 'count', title: 'Count', type: 'numeric' },
+  { name: 'sellPrice', title: 'Sell', type: 'numeric' },
 ];
 
 class ItemDetails extends Component {
@@ -23,7 +22,7 @@ class ItemDetails extends Component {
       sellPrice: 0,
       count: 0,
       comission: 0,
-      comissionFixed: true,
+      comissionFixed: 'COMISSION_FIXED',
       cryptoCurrency: this.props.navigation.state.params.cryptoCurrency,
     };
   }
@@ -48,11 +47,11 @@ class ItemDetails extends Component {
   }
   renderInput() {
     return inputs.map((input, index) => (
-      <View style={input.width === 1 ? formStyles.formInput : [formStyles.formInput, formStyles.formInputLong]} key={`${input.name}_${index}`}>
-        <Text style={formStyles.formLabel}>{input.title}</Text>
+      <View style={index === inputs.length - 1 ? [formStyles.newFormContainer, formStyles.newLastFormContainer] : formStyles.newFormContainer} key={`${input.name}_${index}`}>
+        <Text style={formStyles.newFormLabel}>{input.title}</Text>
         <TextInput
           underlineColorAndroid='transparent'
-          style={formStyles.textbox}
+          style={formStyles.newFormInput}
           keyboardType={input.type}
           placeholderTextColor='#a79cc4'
           showDoneButton
@@ -64,19 +63,29 @@ class ItemDetails extends Component {
     ));
   }
   render() {
-    const { comissionFixed } = this.state;
+    const { comissionFixed, comission } = this.state;
     const { searchResult } = this.props;
 
     return (
       <ScrollView style={layoutStyles.mainContainer}>
         <View>
           <View style={layoutStyles.container}>
-            <View style={formStyles.titleContainer}>
-              <Text style={formStyles.title}>{searchResult.name}</Text>
+            <View style={formStyles.newTitleContainer}>
+              <Text style={formStyles.newTitle}>{searchResult.name}</Text>
             </View>
             {this.renderInput()}
-            <Switch value={comissionFixed} onChangeValue={() => this.setState({ comissionFixed: !comissionFixed })} />
-            <Button onPress={this.reset.bind(this)} text='Save' type='green' />
+            <InputWithTypes
+              title='Comission'
+              selectedValue={comissionFixed}
+              input={comission.toString()}
+              onChangeText={value => this.setState({ comission: value })}
+              onSelect={value => {
+                console.log('#####Select#####', value);
+                this.setState({ comissionFixed: value });
+              }}
+            />
+            {/* <Switch value={comissionFixed} onChangeValue={() => this.setState({ comissionFixed: !comissionFixed })} /> */}
+            <Button onPress={this.reset.bind(this)} text='Save' type='blue' />
           </View>
         </View>
       </ScrollView>

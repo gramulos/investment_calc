@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    color: '#fff',
+    color: '#ffffff',
     fontSize: 20,
   },
 });
