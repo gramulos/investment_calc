@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { NavigationActions } from 'react-navigation';
 import { ActionCreators } from '../actions';
 import { formStyles, layoutStyles, colors } from '../styles';
 import Button from '../components/Button';
@@ -41,12 +42,34 @@ class EditDetails extends Component {
     );
   }
   onDelete() {
-    Alert.alert(
-      'Success',
-      'Item deleted',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
+    const shares = this.props.shares.delete(this.props.navigation.state.params.id);
+    this.props.setLocalItemList(shares).then(() =>
+      Alert.alert(
+        'Success',
+        'Item deleted',
+        [{ text: 'OK',
+          onPress: () => {
+            const resetAction = NavigationActions.reset({
+              index: 0,
+              actions: [
+                NavigationActions.navigate({ routeName: 'Shares' })
+              ]
+            });
+            this.props.navigation.dispatch(resetAction);
+          }
+        }],
+        { cancelable: false }
+      )
     );
+  }
+  reset() {
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'Shares' })
+      ]
+    });
+    this.props.navigation.dispatch(resetAction);
   }
   renderInput() {
     return inputs.map((input, index) => (

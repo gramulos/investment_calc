@@ -3,10 +3,14 @@ import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { NavigationActions } from 'react-navigation';
+import * as Progress from 'react-native-progress';
 import { ActionCreators } from '../../actions';
 import { formStyles, layoutStyles } from '../../styles';
 import Button from '../../components/Button';
-import InputWithTypes from '../../components/InputWithTypes';
+import InputWithOptions from '../../components/InputWithOptions';
+import { COMISSIONS } from '../../config/data';
+import { Summary, Row } from '../../components/Summary';
+import { calc, roundResult, calcComission, getMinimalSellPrice } from '../../helpers/calc';
 
 const inputs = [
   { name: 'buyPrice', title: 'Buy', type: 'numeric' },
@@ -18,32 +22,46 @@ class ItemDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buyPrice: 0,
-      sellPrice: 0,
-      count: 0,
+      buyPrice: '',
+      sellPrice: '',
+      count: '',
+      interest: 1.2,
+      minimalInterest: 1.1,
       comission: 0,
-      comissionFixed: 'COMISSION_FIXED',
+      comissionType: COMISSIONS[0].value,
       cryptoCurrency: this.props.navigation.state.params.cryptoCurrency,
     };
   }
+  componentWillReceiveProps({ itemRates }) {
+    if (!this.state.initialized) {
+      this.setState({
+        initialized: true,
+        buyPrice: itemRates[0].close,
+        count: 10,
+        sellPrice: roundResult(itemRates[0].close * this.state.interest),
+      });
+    }
+  }
   onSave() {
     const newList = this.props.shares.add({ ...this.state, ...this.props.searchResult });
-    this.props.setLocalItemList(newList);
-    Alert.alert(
-      'Success',
-      'Changes saved',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
+    this.props.setLocalItemList(newList).then(() =>
+      Alert.alert(
+        'Success',
+        'Changes saved',
+        [{ text: 'OK',
+          onPress: () => {
+            const resetAction = NavigationActions.reset({
+              index: 0,
+              actions: [
+                NavigationActions.navigate({ routeName: 'Shares' })
+              ]
+            });
+            this.props.navigation.dispatch(resetAction);
+          }
+        }],
+        { cancelable: false }
+      )
     );
-  }
-  reset() {
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Shares' })
-      ]
-    });
-    this.props.navigation.dispatch(resetAction);
   }
   renderInput() {
     return inputs.map((input, index) => (
@@ -53,9 +71,8 @@ class ItemDetails extends Component {
           underlineColorAndroid='transparent'
           style={formStyles.newFormInput}
           keyboardType={input.type}
-          placeholderTextColor='#a79cc4'
-          showDoneButton
-          placeholder={input.type === 'numeric' ? '0' : 'Some text'}
+          placeholderTextColor='#909090'
+          placeholder='0'
           value={this.state[input.name].toString()}
           onChangeText={value => this.setState({ [input.name]: value })}
         />
@@ -63,30 +80,60 @@ class ItemDetails extends Component {
     ));
   }
   render() {
-    const { comissionFixed, comission } = this.state;
-    const { searchResult } = this.props;
+    const { comissionType, comission, buyPrice, count, minimalInterest } = this.state;
+    const { searchResult, isLoadingDailyRates } = this.props;
+
+    if (isLoadingDailyRates) {
+      return (
+        <View style={layoutStyles.center}>
+          <Progress.CircleSnail size={24} indeterminate thickness={1} duration={600} color='#0667d0' />
+        </View>
+      );
+    }
+
+    const income = calc({ ...this.state });
+    const investments = roundResult(buyPrice * count);
+    const comissionAmount = calcComission(income, comission, comissionType);
+    const redLine = getMinimalSellPrice({ ...this.state });
+    const advicedSellPrice = roundResult(redLine * minimalInterest);
 
     return (
       <ScrollView style={layoutStyles.mainContainer}>
-        <View>
-          <View style={layoutStyles.container}>
-            <View style={formStyles.newTitleContainer}>
-              <Text style={formStyles.newTitle}>{searchResult.name}</Text>
-            </View>
-            {this.renderInput()}
-            <InputWithTypes
-              title='Comission'
-              selectedValue={comissionFixed}
-              input={comission.toString()}
-              onChangeText={value => this.setState({ comission: value })}
-              onSelect={value => {
-                console.log('#####Select#####', value);
-                this.setState({ comissionFixed: value });
-              }}
-            />
-            {/* <Switch value={comissionFixed} onChangeValue={() => this.setState({ comissionFixed: !comissionFixed })} /> */}
-            <Button onPress={this.reset.bind(this)} text='Save' type='blue' />
+        <View style={layoutStyles.container}>
+          <View style={formStyles.newTitleContainer}>
+            <Text style={formStyles.newTitle}>{searchResult.name}</Text>
           </View>
+          {this.renderInput()}
+          <InputWithOptions
+            title='Comission'
+            selectedValue={comissionType}
+            input={comission.toString()}
+            options={COMISSIONS}
+            keyboardType='numeric'
+            onChangeText={value => {
+              if (value === COMISSIONS[0].value) {
+                this.setState({ comission: '0' });
+              } else {
+                this.setState({ comission: value });
+              }
+            }}
+            disabled={this.state.comissionType !== COMISSIONS[0].value}
+            onSelect={value => {
+              if (value === COMISSIONS[0].value) {
+                this.setState({ comissionType: value, comission: 0 });
+              } else {
+                this.setState({ comissionType: value });
+              }
+            }}
+          />
+          <Summary title='Estimations'>
+            <Row header='Investing' value={`${investments} $`} />
+            <Row header='Income' value={`${income} $`} />
+            <Row header='Comission' value={`${comissionAmount} $`} />
+            <Row header='Red line sell price' value={`${redLine} $`} valueColor='#ff1430' />
+            <Row header='Adviced sell price' value={`${advicedSellPrice} $`} valueColor='#0bb35a' />
+          </Summary>
+          <Button onPress={this.onSave.bind(this)} text='Save' type='blue' />
         </View>
       </ScrollView>
     );
@@ -96,7 +143,9 @@ class ItemDetails extends Component {
 const mapDispatchToProps = (dispatch) => bindActionCreators(ActionCreators, dispatch);
 const mapStateToProps = ({ stocks, local }) => ({
   shares: local.shares,
+  isLoadingDailyRates: stocks.isLoadingDailyRates,
   searchResult: stocks.searchResult,
+  itemRates: stocks.itemRates,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemDetails);

@@ -46,7 +46,14 @@ class SearchInMarket extends Component {
               <Text style={layoutStyles.title}>Please, enter stock symbol{'\n'}to make a search.</Text>
               <Text style={layoutStyles.subtitle}>Ex: GOOGL</Text>
             </View>}
-          {searchResult && <Button onPress={() => this.props.navigation.navigate('ItemDetails', { cryptoCurrency: this.props.navigation.state.params.cryptoCurrency })} text='Next' type='blue' />}
+          {searchResult && <Button
+            onPress={() => {
+              this.props.getItemRates(searchResult.ticker);
+              this.props.navigation.navigate('ItemDetails', { cryptoCurrency: this.props.navigation.state.params.cryptoCurrency });
+            }}
+            text='Next'
+            type='blue'
+          />}
         </View>
       </ScrollView>
     );

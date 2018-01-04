@@ -73,7 +73,7 @@ export class Select extends Component {
   render() {
     const { style } = this.props;
     const icon = this.icons[this.state.expanded ? 'up' : 'down'];
-    const containerStyle = this.state.expanded ? [styles.selectbox, style, { height: this.state.animation }] : [styles.selectbox, style, styles.selectboxExpanded, { height: this.state.animation }];
+    const containerStyle = this.state.expanded ? [styles.selectbox, style, styles.selectboxExpanded, { height: this.state.animation }] : [styles.selectbox, style, { height: this.state.animation }];
 
     return (
       <Animated.View style={containerStyle}>
@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
   optionSelected: {
-    backgroundColor: '#0667d0',
-    color: '#ffffff',
+    fontFamily: 'Roboto-800',
   }
 });

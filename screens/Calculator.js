@@ -32,13 +32,13 @@ class Calculator extends Component {
   }
   renderInput() {
     return inputs.map((input, index) => (
-      <View style={formStyles.formInput} key={`${input.name}_${index}`}>
-        <Text style={formStyles.formLabel}>{input.title}</Text>
+      <View style={index === inputs.length - 1 ? [formStyles.newFormContainer, formStyles.newLastFormContainer] : formStyles.newFormContainer} key={`${input.name}_${index}`}>
+        <Text style={formStyles.newFormLabel}>{input.title}</Text>
         <TextInput
           underlineColorAndroid='transparent'
-          style={formStyles.textbox}
+          style={formStyles.newFormInput}
           keyboardType='numeric'
-          showDoneButton
+          placeholderTextColor='#909090'
           placeholder='0'
           value={this.state[input.name].toString()}
           onChangeText={value => this.setState({ [input.name]: value.trim() })}
@@ -51,8 +51,8 @@ class Calculator extends Component {
     return (
       <ScrollView style={layoutStyles.mainContainer}>
         <View style={layoutStyles.container}>
-          <View style={formStyles.titleContainer}>
-            <Text style={formStyles.title}>{name}</Text>
+          <View style={formStyles.newTitleContainer}>
+            <Text style={formStyles.newTitle}>{name}</Text>
           </View>
           {this.renderInput()}
           <Text style={formStyles.result}>{calc({ buyPrice, sellPrice, count, comission, comissionFixed })}</Text>

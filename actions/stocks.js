@@ -13,7 +13,7 @@ const api = axios.create({
 // Search item in stock by ticker (For example: googl)
 export const searchItemInStock = (ticker) => (dispatch) => {
   dispatch(searchItemInStockRequest());
-  api.get(ticker)
+  return api.get(ticker)
   .then(({ data }) => dispatch(searchItemInStockSuccess(data)))
   .catch((err) => dispatch(searchItemInStockError(err)));
 };
@@ -35,7 +35,7 @@ const searchItemInStockError = (error) => ({
 // Get lates available item rates by ticker
 export const getItemRates = (ticker) => (dispatch) => {
   dispatch(getItemRatesRequest());
-  api.get(`${ticker}/prices`)
+  return api.get(`${ticker}/prices`)
   .then(({ data }) => dispatch(getItemRatesSuccess(data)))
   .catch((err) => dispatch(getItemRatesError(err)));
 };
@@ -57,7 +57,7 @@ const getItemRatesError = (error) => ({
 // Get available rates history for specific item by date range
 export const getItemRatesHistory = (ticker, startDate, endDate) => (dispatch) => {
   dispatch(getItemRatesHistoryRequest());
-  api.get(`${ticker}/prices?startDate=${startDate}&endDate=${endDate}`)
+  return api.get(`${ticker}/prices?startDate=${startDate}&endDate=${endDate}`)
   .then(({ data }) => dispatch(getItemRatesHistorySuccess(data)))
   .catch((err) => dispatch(getItemRatesHistoryError(err)));
 };

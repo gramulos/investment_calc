@@ -35,4 +35,9 @@ export default StyleSheet.create({
     color: '#797979',
     fontFamily: 'Roboto-500i',
   },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });

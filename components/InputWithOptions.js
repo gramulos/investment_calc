@@ -2,29 +2,25 @@ import React from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions } from 'react-native';
 import { Select, Option } from './Select';
 
-export default ({ title, input, selectedValue, onChangeText, onSelect }) => (
+export default ({ title, input, selectedValue, onChangeText, onSelect, options, disabled, keyboardType }) => (
   <View style={styles.container}>
     <Text style={styles.formLabel}>{title}</Text>
     <View style={styles.inputs}>
-      <TextInput style={styles.formInput} onChangeText={onChangeText} value={input} />
+      <TextInput
+        style={!disabled ? [styles.formInput, styles.disabledformInput] : styles.formInput}
+        onChangeText={onChangeText}
+        value={input}
+        editable={disabled}
+        keyboardType={keyboardType}
+        selectTextOnFocus={disabled}
+      />
       <Select
         onSelect={onSelect}
         selectedValue={selectedValue}
         style={styles.selectbox}
         textStyle={styles.selectText}
       >
-        <Option value='COMISSION_FIXED'>Fixed</Option>
-        <Option value='COMISSION_PERCENT'>Percent</Option>
-        <Option value='COMISSION_NONE'>None</Option>
-        <Option value='COMISSION_FIXED1'>Fixed</Option>
-        <Option value='COMISSION_PERCENT1'>Percent</Option>
-        <Option value='COMISSION_NONE1'>None</Option>
-        <Option value='COMISSION_FIXED2'>Fixed</Option>
-        <Option value='COMISSION_PERCENT2'>Percent</Option>
-        <Option value='COMISSION_NONE2'>None</Option>
-        <Option value='COMISSION_FIXED3'>Fixed</Option>
-        <Option value='COMISSION_PERCENT3'>Percent</Option>
-        <Option value='COMISSION_NONE3'>None</Option>
+        {options.map(option => <Option value={option.value} key={option.value}>{option.title}</Option>)}
       </Select>
     </View>
   </View>
@@ -58,6 +54,9 @@ const styles = StyleSheet.create({
     paddingBottom: 3,
     fontSize: 18,
     backgroundColor: '#ffffff',
+  },
+  disabledformInput: {
+    backgroundColor: '#f7f7f7',
   },
   selectbox: {
     height: 45,
