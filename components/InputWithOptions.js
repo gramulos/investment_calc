@@ -7,12 +7,12 @@ export default ({ title, input, selectedValue, onChangeText, onSelect, options, 
     <Text style={styles.formLabel}>{title}</Text>
     <View style={styles.inputs}>
       <TextInput
-        style={!disabled ? [styles.formInput, styles.disabledformInput] : styles.formInput}
+        style={disabled ? [styles.formInput, styles.disabledformInput] : styles.formInput}
         onChangeText={onChangeText}
         value={input}
-        editable={disabled}
+        editable={!disabled}
         keyboardType={keyboardType}
-        selectTextOnFocus={disabled}
+        selectTextOnFocus={!disabled}
       />
       <Select
         onSelect={onSelect}

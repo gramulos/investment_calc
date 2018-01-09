@@ -28,7 +28,7 @@ export class Select extends Component {
 
   setMaxHeight() {
     if (!this.state.maxHeight) {
-      this.setState({ maxHeight: 135 });
+      this.setState({ maxHeight: this.props.children.length >= 3 ? 135 : this.props.children.length * 45 });
     }
   }
 

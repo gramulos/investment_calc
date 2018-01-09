@@ -1,31 +1,73 @@
-export const calc = ({ buyPrice, sellPrice, count, comission, comissionType }) => {
-  if (count === '0' || count === '') {
+import * as types from '../config/data';
+
+const tryParse = (value) => {
+  const parsedValue = parseFloat(value);
+  if (Number.isNaN(parsedValue)) {
     return 0;
   }
-
-  const income = (sellPrice * count) - (buyPrice * count);
-  const incomeWithoutComission = income - calcComission(income, comission, comissionType);
-
-  return roundResult(incomeWithoutComission);
+  return parsedValue;
 };
 
-export const calcComission = (income, comission, comissionType) => {
-  switch (comissionType) {
-    case 'COMISSION_NONE':
-      return 0;
-    case 'COMISSION_FIXED':
-      return roundResult(comission);
-    case 'COMISSION_PERCENT':
-      return roundResult((comission * income) / 100);
+const calcComission = (amount, commission, commissionType) => {
+  switch (commissionType) {
+    case types.COMMISSION_FIXED:
+      return commission;
+    case types.COMMISSION_PERCENT:
+      return (commission * amount) / 100;
     default:
       return 0;
   }
 };
 
-export const getMinimalSellPrice = ({ buyPrice, count, comission, comissionType }) => {
-  const comissionCount = calcComission(0, comission, comissionType);
-  const sellPrice = (0 + (buyPrice * count) + comissionCount) / count;
-  return roundResult(sellPrice);
+const getSellPriceByInterest = (buyPrice, count, commission, commissionType, interest, interestType) => {
+  let sellPrice = 0;
+
+  if (interestType === types.INTEREST_FIXED && commissionType !== types.COMMISSION_PERCENT) {
+    sellPrice = (interest + (commission * 2) + (buyPrice * count)) / count;
+  } else if (interestType === types.INTEREST_PERCENT && commissionType !== types.COMMISSION_PERCENT) {
+    sellPrice = (((buyPrice * count) * (1 + (interest / 100))) + (commission * 2)) / count;
+  } else if (interestType === types.INTEREST_PERCENT && commissionType === types.COMMISSION_PERCENT) {
+    sellPrice = (((buyPrice * count) * (1 + (interest / 100))) + (buyPrice * count * (commission / 100))) / (count - (count * (commission / 100)));
+  } else if (interestType === types.INTEREST_FIXED && commissionType === types.COMMISSION_PERCENT) {
+    sellPrice = ((buyPrice * count) + interest + (buyPrice * count * (commission / 100))) / (count - (count * (commission / 100)));
+  }
+
+  return sellPrice;
 };
 
-export const roundResult = (result) => Math.round(result * 100) / 100;
+export default (props) => {
+  const buyPrice = tryParse(props.buyPrice);
+  const count = tryParse(props.count);
+  const commission = tryParse(props.commission);
+  const commissionType = props.commissionType;
+  const interest = tryParse(props.interest);
+  const interestType = props.interestType;
+  const sellPrice = props.selector === 'sellPrice' ? tryParse(props.sellPrice) : getSellPriceByInterest(buyPrice, count, commission, commissionType, interest, interestType);
+
+  const achievements = sellPrice * count;
+  const investments = buyPrice * count;
+
+  const depositCommission = calcComission(investments, commission, commissionType);
+  const withdrawCommission = calcComission(achievements, commission, commissionType);
+  const totalCommission = depositCommission + withdrawCommission;
+
+  const income = achievements - investments - totalCommission;
+  const redLine = getSellPriceByInterest(buyPrice, count, commission, commissionType, 0, types.INTEREST_FIXED);
+
+  return {
+    buyPrice: props.selector === 'buyPrice' ? props.buyPrice : buyPrice.toFixed(2),
+    sellPrice: props.selector === 'sellPrice' ? props.sellPrice : sellPrice.toFixed(2),
+    count: props.selector === 'count' ? props.count : count.toString(),
+    commission: commission.toString(),
+    commissionType,
+    interest: props.selector === 'interest' ? props.interest : interest.toString(),
+    interestType,
+    investments: investments.toFixed(2),
+    achievements: achievements.toFixed(2),
+    income: income.toFixed(2),
+    depositCommission: depositCommission.toFixed(2),
+    withdrawCommission: withdrawCommission.toFixed(2),
+    totalCommission: totalCommission.toFixed(2),
+    redLine: redLine.toFixed(2),
+  };
+};

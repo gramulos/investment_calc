@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TextInput, Alert } from 'react-native';
+import { ScrollView, View, Text, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { NavigationActions } from 'react-navigation';
@@ -8,37 +8,29 @@ import { ActionCreators } from '../../actions';
 import { formStyles, layoutStyles } from '../../styles';
 import Button from '../../components/Button';
 import InputWithOptions from '../../components/InputWithOptions';
-import { COMISSIONS } from '../../config/data';
+import * as types from '../../config/data';
 import { Summary, Row } from '../../components/Summary';
-import { calc, roundResult, calcComission, getMinimalSellPrice } from '../../helpers/calc';
-
-const inputs = [
-  { name: 'buyPrice', title: 'Buy', type: 'numeric' },
-  { name: 'count', title: 'Count', type: 'numeric' },
-  { name: 'sellPrice', title: 'Sell', type: 'numeric' },
-];
+import Input from '../../components/Input';
+import calc from '../../helpers/calc';
 
 class ItemDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buyPrice: '',
-      sellPrice: '',
-      count: '',
-      interest: 1.2,
-      minimalInterest: 1.1,
-      comission: 0,
-      comissionType: COMISSIONS[0].value,
+      count: '10',
+      interest: '50',
+      interestType: types.INTEREST_FIXED,
+      commission: '0',
+      commissionType: types.COMMISSION_NONE,
       cryptoCurrency: this.props.navigation.state.params.cryptoCurrency,
     };
   }
   componentWillReceiveProps({ itemRates }) {
-    if (!this.state.initialized) {
+    if (!this.state.initialized && itemRates) {
       this.setState({
         initialized: true,
-        buyPrice: itemRates[0].close,
-        count: 10,
-        sellPrice: roundResult(itemRates[0].close * this.state.interest),
+        selector: 'buyPrice',
+        buyPrice: itemRates[0].close.toFixed(2),
       });
     }
   }
@@ -63,24 +55,19 @@ class ItemDetails extends Component {
       )
     );
   }
-  renderInput() {
-    return inputs.map((input, index) => (
-      <View style={index === inputs.length - 1 ? [formStyles.newFormContainer, formStyles.newLastFormContainer] : formStyles.newFormContainer} key={`${input.name}_${index}`}>
-        <Text style={formStyles.newFormLabel}>{input.title}</Text>
-        <TextInput
-          underlineColorAndroid='transparent'
-          style={formStyles.newFormInput}
-          keyboardType={input.type}
-          placeholderTextColor='#909090'
-          placeholder='0'
-          value={this.state[input.name].toString()}
-          onChangeText={value => this.setState({ [input.name]: value })}
-        />
-      </View>
-    ));
-  }
   render() {
-    const { comissionType, comission, buyPrice, count, minimalInterest } = this.state;
+    const {
+      commissionType,
+      interest,
+      interestType,
+      commission,
+      sellPrice,
+      count,
+      investments,
+      income,
+      totalCommission,
+      redLine,
+      buyPrice } = calc(this.state);
     const { searchResult, isLoadingDailyRates } = this.props;
 
     if (isLoadingDailyRates) {
@@ -91,47 +78,55 @@ class ItemDetails extends Component {
       );
     }
 
-    const income = calc({ ...this.state });
-    const investments = roundResult(buyPrice * count);
-    const comissionAmount = calcComission(income, comission, comissionType);
-    const redLine = getMinimalSellPrice({ ...this.state });
-    const advicedSellPrice = roundResult(redLine * minimalInterest);
-
     return (
       <ScrollView style={layoutStyles.mainContainer}>
         <View style={layoutStyles.container}>
           <View style={formStyles.newTitleContainer}>
             <Text style={formStyles.newTitle}>{searchResult.name}</Text>
           </View>
-          {this.renderInput()}
-          <InputWithOptions
-            title='Comission'
-            selectedValue={comissionType}
-            input={comission.toString()}
-            options={COMISSIONS}
+          <Input
+            label='Buy ($)'
             keyboardType='numeric'
-            onChangeText={value => {
-              if (value === COMISSIONS[0].value) {
-                this.setState({ comission: '0' });
-              } else {
-                this.setState({ comission: value });
-              }
-            }}
-            disabled={this.state.comissionType !== COMISSIONS[0].value}
-            onSelect={value => {
-              if (value === COMISSIONS[0].value) {
-                this.setState({ comissionType: value, comission: 0 });
-              } else {
-                this.setState({ comissionType: value });
-              }
-            }}
+            value={buyPrice}
+            onChangeText={value => this.setState({ selector: 'buyPrice', buyPrice: value })}
+          />
+          <Input
+            label='Count'
+            keyboardType='numeric'
+            value={count}
+            onChangeText={value => this.setState({ selector: 'count', count: value })}
+          />
+          <Input
+            isLast
+            label='Sell ($)'
+            keyboardType='numeric'
+            value={sellPrice}
+            onChangeText={value => this.setState({ selector: 'sellPrice', sellPrice: value })}
+          />
+          <InputWithOptions
+            title='Interest'
+            selectedValue={interestType}
+            input={interest}
+            options={types.INTERESTS}
+            keyboardType='numeric'
+            onChangeText={value => this.setState({ selector: 'interest', interest: value })}
+            onSelect={value => this.setState({ selector: 'interestType', interestType: value })}
+          />
+          <InputWithOptions
+            title='Comission for transaction'
+            selectedValue={commissionType}
+            input={commission}
+            options={types.COMMISSIONS}
+            keyboardType='numeric'
+            disabled={this.state.commissionType === types.COMMISSION_NONE}
+            onChangeText={value => this.setState({ selector: 'commission', commission: value === types.COMMISSION_NONE ? 0 : value })}
+            onSelect={value => this.setState({ selector: 'commissionType', commissionType: value, commission: value === types.COMMISSION_NONE ? 0 : commission })}
           />
           <Summary title='Estimations'>
             <Row header='Investing' value={`${investments} $`} />
-            <Row header='Income' value={`${income} $`} />
-            <Row header='Comission' value={`${comissionAmount} $`} />
+            <Row header='Income' value={`${income} $`} valueColor='#0bb35a' />
+            <Row header='Comission' value={`${totalCommission} $`} valueColor='#fab86b' />
             <Row header='Red line sell price' value={`${redLine} $`} valueColor='#ff1430' />
-            <Row header='Adviced sell price' value={`${advicedSellPrice} $`} valueColor='#0bb35a' />
           </Summary>
           <Button onPress={this.onSave.bind(this)} text='Save' type='blue' />
         </View>

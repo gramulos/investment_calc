@@ -22,7 +22,7 @@ class Shares extends Component {
         <TouchableHighlight key={share.id} style={listStyles.listItem} onPress={() => this.onLearnMore(share)} underlayColor='#ffffff'>
           <View>
             <Text style={listStyles.title}>{`${share.name} (${share.ticker})`}</Text>
-            <Text style={listStyles.subtitle}>Invested: {Math.round(share.buyPrice * share.count * 100) / 100} EUR</Text>
+            <Text style={listStyles.subtitle}>Invested: {(share.buyPrice * share.count).toFixed(2)} EUR</Text>
             <Text style={listStyles.subtitle}>Shares count: {share.count}</Text>
             {icon}
           </View>
