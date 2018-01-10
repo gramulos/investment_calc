@@ -35,13 +35,29 @@ const getSellPriceByInterest = (buyPrice, count, commission, commissionType, int
   return sellPrice;
 };
 
+const getInterestBySellPrice = (buyPrice, count, commission, commissionType, sellPrice, interestType) => {
+  let interest = 0;
+
+  if (interestType === types.INTEREST_FIXED && commissionType !== types.COMMISSION_PERCENT) {
+    interest = (sellPrice * count) - (commission * 2) - (buyPrice * count);
+  } else if (interestType === types.INTEREST_PERCENT && commissionType !== types.COMMISSION_PERCENT) {
+    interest = ((((sellPrice * count) - (commission * 2)) / (buyPrice * count)) - 1) * 100;
+  } else if (interestType === types.INTEREST_PERCENT && commissionType === types.COMMISSION_PERCENT) {
+    interest = ((((sellPrice * (count - (count * (commission / 100)))) - (buyPrice * count * (commission / 100))) / (buyPrice * count)) - 1) * 100;
+  } else if (interestType === types.INTEREST_FIXED && commissionType === types.COMMISSION_PERCENT) {
+    interest = (sellPrice * (count - (count * (commission / 100)))) - (buyPrice * count) - (buyPrice * count * (commission / 100));
+  }
+
+  return interest;
+};
+
 export default (props) => {
   const buyPrice = tryParse(props.buyPrice);
   const count = tryParse(props.count);
   const commission = tryParse(props.commission);
   const commissionType = props.commissionType;
-  const interest = tryParse(props.interest);
   const interestType = props.interestType;
+  const interest = props.selector !== 'sellPrice' ? tryParse(props.interest) : getInterestBySellPrice(buyPrice, count, commission, commissionType, tryParse(props.sellPrice), interestType);
   const sellPrice = props.selector === 'sellPrice' ? tryParse(props.sellPrice) : getSellPriceByInterest(buyPrice, count, commission, commissionType, interest, interestType);
 
   const achievements = sellPrice * count;
@@ -60,7 +76,7 @@ export default (props) => {
     count: props.selector === 'count' ? props.count : count.toString(),
     commission: commission.toString(),
     commissionType,
-    interest: props.selector === 'interest' ? props.interest : interest.toString(),
+    interest: props.selector === 'interest' ? props.interest : interest.toFixed(2),
     interestType,
     investments: investments.toFixed(2),
     achievements: achievements.toFixed(2),

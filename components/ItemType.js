@@ -1,10 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Dimensions, TouchableHighlight } from 'react-native';
+import { createIconSetFromFontello } from 'react-native-vector-icons';
+import fontelloConfig from '../assets/icons/config.json';
+import iconBg from '../assets/icon_bg.png';
 
-const ItemType = ({ title, subtitle, icon, onPress }) => (
+const Icon = createIconSetFromFontello(fontelloConfig);
+
+const ItemType = ({ title, subtitle, icon, onPress, iconSize = 20 }) => (
   <TouchableHighlight style={styles.container} onPress={onPress} underlayColor='#ffffff'>
     <View style={styles.item}>
-      <Image source={icon} style={styles.icon} resizeMode='contain' />
+      <View style={styles.iconWrapper}>
+        <Image source={iconBg} style={styles.iconBg} resizeMode='contain' />
+        <Icon name={icon} size={iconSize} color='#ffffff' style={styles.icon} />
+      </View>
       <View style={styles.wrapper}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
@@ -32,10 +40,23 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
-  icon: {
+  iconWrapper: {
     width: 60,
     height: 60,
-    marginRight: 30,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconBg: {
+    width: 60,
+    height: 60,
+  },
+  icon: {
+    position: 'absolute',
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 1,
+    elevation: 2,
   },
   wrapper: {
     width: Dimensions.get('window').width - 150,

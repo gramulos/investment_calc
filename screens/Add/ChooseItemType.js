@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { View, ScrollView, Text } from 'react-native';
 import { layoutStyles } from '../../styles';
 import ItemType from '../../components/ItemType';
-import crypto from '../../assets/CryptoCurrency1.png';
-import stockMarket from '../../assets/StockMarket.png';
 
 class ChooseItemType extends Component {
   constructor(props) {
@@ -13,12 +11,13 @@ class ChooseItemType extends Component {
         {
           title: 'Stock market',
           subtitle: `Apple, Google, Microsoft,${'\n'}Intel, etc.`,
-          icon: stockMarket,
+          icon: 'mtr',
+          iconSize: 26,
           onPress: () => this.props.navigation.navigate('SearchInMarket', { cryptoCurrency: false }),
         }, {
           title: 'Cryptocurrency',
           subtitle: `Bitcoin, Etherium, Litecoin,${'\n'}Dash, etc.`,
-          icon: crypto,
+          icon: 'ltc',
           onPress: () => this.props.navigation.navigate('SearchInMarket', { cryptoCurrency: true }),
         }
       ]
@@ -37,6 +36,7 @@ class ChooseItemType extends Component {
               subtitle={type.subtitle}
               icon={type.icon}
               key={type.title}
+              iconSize={type.iconSize}
               onPress={type.onPress.bind(this)}
             />))}
         </View>
