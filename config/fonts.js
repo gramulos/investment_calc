@@ -14,5 +14,6 @@ export default () => Font.loadAsync({
   'Roboto-300i': require('../assets/fonts/Roboto-LightItalic.ttf'),
   'Roboto-100': require('../assets/fonts/Roboto-Thin.ttf'),
   'Roboto-100i': require('../assets/fonts/Roboto-ThinItalic.ttf'),
+  crypto_icons: require('../assets/icons/crypto_icons.ttf'),
 });
 /* eslint-enable global-require */
