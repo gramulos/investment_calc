@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   icon: {
+    backgroundColor: 'transparent',
     position: 'absolute',
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     textShadowOffset: { width: 1, height: 2 },

@@ -43,13 +43,13 @@ class SearchInMarket extends Component {
             ]}
           /> :
             <View style={layoutStyles.titleContainer}>
-              <Text style={layoutStyles.title}>Please, enter stock symbol{'\n'}to make a search.</Text>
+              <Text style={layoutStyles.title}>Please, enter company stock symbol{'\n'}to make a search.</Text>
               <Text style={layoutStyles.subtitle}>Ex: GOOGL</Text>
             </View>}
           {searchResult && <Button
             onPress={() => {
               this.props.getItemRates(searchResult.ticker);
-              this.props.navigation.navigate('ItemDetails', { cryptoCurrency: this.props.navigation.state.params.cryptoCurrency });
+              this.props.navigation.navigate('ItemDetails', { isCryptoCurrency: this.props.navigation.state.params.cryptoCurrency });
             }}
             text='Next'
             type='blue'

@@ -17,8 +17,9 @@ class ChooseItemType extends Component {
         }, {
           title: 'Cryptocurrency',
           subtitle: `Bitcoin, Etherium, Litecoin,${'\n'}Dash, etc.`,
-          icon: 'ltc',
-          onPress: () => this.props.navigation.navigate('SearchInMarket', { cryptoCurrency: true }),
+          icon: 'btc',
+          iconSize: 26,
+          onPress: () => this.props.navigation.navigate('SearchInCrypto', { cryptoCurrency: true }),
         }
       ]
     };

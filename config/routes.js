@@ -8,6 +8,7 @@ import Shares from '../screens/Shares';
 import Add from '../screens/Add';
 import Edit from '../screens/Edit';
 import SearchInMarket from '../screens/Add/SearchInMarket';
+import SearchInCrypto from '../screens/Add/SearchInCrypto';
 import ChooseItemType from '../screens/Add/ChooseItemType';
 import ItemDetails from '../screens/Add/ItemDetails';
 
@@ -44,6 +45,12 @@ export const Routes = StackNavigator({
     screen: ChooseItemType,
     navigationOptions: Object.assign({}, {
       title: 'Type',
+    }, topNavigationBaseStyle),
+  },
+  SearchInCrypto: {
+    screen: SearchInCrypto,
+    navigationOptions: Object.assign({}, {
+      title: 'Search',
     }, topNavigationBaseStyle),
   },
   SearchInMarket: {
