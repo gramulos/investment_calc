@@ -11,7 +11,7 @@ import InputWithOptions from '../../components/InputWithOptions';
 import * as types from '../../config/data';
 import { Summary, Row } from '../../components/Summary';
 import Input from '../../components/Input';
-import calc from '../../helpers/calc';
+import { calc, getSellPriceByInterest } from '../../helpers/calc';
 
 class ItemDetails extends Component {
   constructor(props) {
@@ -29,10 +29,16 @@ class ItemDetails extends Component {
   }
   componentWillReceiveProps({ itemRates }) {
     if (!this.state.initialized && itemRates) {
+      const { isCryptoCurrency, cryptoCurrency, count, commission, commissionType, interest, interestType } = this.state;
+      const buyPrice = isCryptoCurrency ? parseFloat(itemRates.last).toFixed(2) : itemRates[0].close.toFixed(2);
+      const currency = isCryptoCurrency ? cryptoCurrency.quote_currency : 'USD';
+      const sellPrice = getSellPriceByInterest(parseFloat(buyPrice), parseFloat(count), parseFloat(commission), commissionType, parseFloat(interest), interestType);
       this.setState({
         initialized: true,
         selector: 'buyPrice',
-        buyPrice: this.state.isCryptoCurrency ? parseFloat(itemRates.last).toFixed(2) : itemRates[0].close.toFixed(2),
+        buyPrice,
+        currency,
+        sellPrice,
       });
     }
   }
@@ -40,9 +46,10 @@ class ItemDetails extends Component {
     const { isCryptoCurrency, cryptoCurrency } = this.state;
     const props = Object.assign({}, this.state, isCryptoCurrency ? cryptoCurrency : this.props.searchResult);
     const newList = this.props.shares.add(props);
+
     this.props.setLocalItemList(newList).then(() =>
       Alert.alert(
-        'Success',
+        'New item added',
         'Changes saved',
         [{ text: 'OK',
           onPress: () => {
@@ -73,7 +80,7 @@ class ItemDetails extends Component {
       redLine,
       buyPrice, } = calc(this.state);
     const { searchResult, isLoadingDailyRates } = this.props;
-    const { cryptoCurrency, isCryptoCurrency } = this.state;
+    const { cryptoCurrency, isCryptoCurrency, currency } = this.state;
 
     if (isLoadingDailyRates) {
       return (
@@ -84,7 +91,6 @@ class ItemDetails extends Component {
     }
 
     const title = isCryptoCurrency ? cryptoCurrency.name : searchResult.name;
-    const currency = isCryptoCurrency ? cryptoCurrency.quote_currency : 'USD';
 
     return (
       <ScrollView style={layoutStyles.mainContainer}>
@@ -131,10 +137,10 @@ class ItemDetails extends Component {
             onSelect={value => this.setState({ selector: 'commissionType', commissionType: value, commission: value === types.COMMISSION_NONE ? 0 : commission })}
           />
           <Summary title='Estimations'>
-            <Row header='Investing' value={`${investments} $`} />
-            <Row header='Income' value={`${income} $`} valueColor='#0bb35a' />
-            <Row header='Comission' value={`${totalCommission} $`} valueColor='#fab86b' />
-            <Row header='Red line sell price' value={`${redLine} $`} valueColor='#ff1430' />
+            <Row header='Investing' value={`${investments} ${currency}`} />
+            <Row header='Income' value={`${income} ${currency}`} valueColor='#0bb35a' />
+            <Row header='Comission' value={`${totalCommission} ${currency}`} valueColor='#fab86b' />
+            <Row header='Red line sell price' value={`${redLine} ${currency}`} valueColor='#ff1430' />
           </Summary>
           <Button onPress={this.onSave.bind(this)} text='Save' type='blue' />
         </View>

@@ -13,7 +13,7 @@ export const getCryptoList = () => (dispatch) => {
     .then(currencies => {
       const data = products.data.map(product => {
         const curr = currencies.data.find(currency => currency.id === product.base_currency);
-        return Object.assign({}, product, { name: curr.name });
+        return Object.assign({}, product, { name: curr.name, id: undefined, ticker: product.id });
       });
       dispatch(getCryptoListSuccess(data));
     })

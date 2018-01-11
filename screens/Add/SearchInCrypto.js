@@ -17,7 +17,7 @@ class SearchInMarket extends Component {
     this.props.getCryptoList();
   }
   selectItem(item) {
-    this.props.getCryptoItemRates(item.id);
+    this.props.getCryptoItemRates(item.ticker);
     this.props.navigation.navigate('ItemDetails', { isCryptoCurrency: this.props.navigation.state.params.cryptoCurrency, cryptoCurrency: item });
   }
   renderItems() {

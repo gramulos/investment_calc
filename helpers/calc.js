@@ -19,7 +19,7 @@ const calcComission = (amount, commission, commissionType) => {
   }
 };
 
-const getSellPriceByInterest = (buyPrice, count, commission, commissionType, interest, interestType) => {
+export const getSellPriceByInterest = (buyPrice, count, commission, commissionType, interest, interestType) => {
   let sellPrice = 0;
 
   if (interestType === types.INTEREST_FIXED && commissionType !== types.COMMISSION_PERCENT) {
@@ -51,7 +51,7 @@ const getInterestBySellPrice = (buyPrice, count, commission, commissionType, sel
   return interest;
 };
 
-export default (props) => {
+export const calc = (props) => {
   const buyPrice = tryParse(props.buyPrice);
   const count = tryParse(props.count);
   const commission = tryParse(props.commission);
