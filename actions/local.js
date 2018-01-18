@@ -10,7 +10,7 @@ export const getLocalItemList = () => (dispatch) => {
   return AsyncStorage.getItem(LOCAL_SHARES_LIST)
   .then((data) => {
     const jsonData = JSON.parse(JSON.parse(data));
-    const stockList = new StockList(jsonData.list);
+    const stockList = new StockList(jsonData ? jsonData.list : { list: [] });
     dispatch(getLocalItemListSuccess(stockList));
   })
   .catch((err) => dispatch(getLocalItemListError(err)));

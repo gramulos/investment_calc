@@ -73,8 +73,14 @@ export const Routes = StackNavigator({
   },
   ItemDetails: {
     screen: ItemDetails,
-    navigationOptions: Object.assign({}, {
+    navigationOptions: ({ navigation }) => Object.assign({}, {
       title: 'Details',
+      headerRight: navigation.state.params.isEditing ? (
+        <MaterialIcons
+          name='delete'
+          style={layoutStyles.settingsIcon}
+          onPress={navigation.state.params.onPress}
+        />) : null,
     }, topNavigationBaseStyle),
   },
   Shares: {

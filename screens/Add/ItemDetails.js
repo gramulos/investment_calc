@@ -17,21 +17,33 @@ class ItemDetails extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      count: '10',
-      interest: '50',
-      interestType: types.INTEREST_FIXED,
-      commission: '0',
-      commissionType: types.COMMISSION_NONE,
-      isCryptoCurrency: this.props.navigation.state.params.isCryptoCurrency,
-      cryptoCurrency: this.props.navigation.state.params.cryptoCurrency,
-    };
+    if (this.props.navigation.state.params.isEditing) {
+      this.state = {
+        ...this.props.navigation.state.params,
+        initialized: true,
+        cryptoCurrency: {
+          ...this.props.navigation.state.params,
+        },
+      };
+      this.props.navigation.setParams({ onPress: this.onDelete.bind(this) });
+    } else {
+      this.state = {
+        count: '10',
+        interest: '50',
+        interestType: types.INTEREST_FIXED,
+        commission: '0',
+        commissionType: types.COMMISSION_NONE,
+        isCryptoCurrency: this.props.navigation.state.params.isCryptoCurrency,
+        cryptoCurrency: this.props.navigation.state.params.cryptoCurrency,
+      };
+    }
   }
   componentWillReceiveProps({ itemRates }) {
     if (!this.state.initialized && itemRates) {
       const { isCryptoCurrency, cryptoCurrency, count, commission, commissionType, interest, interestType } = this.state;
       const buyPrice = isCryptoCurrency ? parseFloat(itemRates.last).toFixed(2) : itemRates[0].close.toFixed(2);
       const currency = isCryptoCurrency ? cryptoCurrency.quote_currency : 'USD';
+      const icon = isCryptoCurrency ? cryptoCurrency.base_currency.toLowerCase() : 'mtr';
       const sellPrice = getSellPriceByInterest(parseFloat(buyPrice), parseFloat(count), parseFloat(commission), commissionType, parseFloat(interest), interestType);
       this.setState({
         initialized: true,
@@ -39,10 +51,32 @@ class ItemDetails extends Component {
         buyPrice,
         currency,
         sellPrice,
+        icon,
       });
     }
   }
-  onSave() {
+  onDelete() {
+    const newList = this.props.shares.delete(this.state.id);
+    this.props.setLocalItemList(newList).then(() =>
+      Alert.alert(
+        'Item deleted',
+        'Changes saved',
+        [{ text: 'OK',
+          onPress: () => {
+            const resetAction = NavigationActions.reset({
+              index: 0,
+              actions: [
+                NavigationActions.navigate({ routeName: 'Shares' })
+              ]
+            });
+            this.props.navigation.dispatch(resetAction);
+          }
+        }],
+        { cancelable: false }
+      )
+    );
+  }
+  addNew() {
     const { isCryptoCurrency, cryptoCurrency } = this.state;
     const props = Object.assign({}, this.state, isCryptoCurrency ? cryptoCurrency : this.props.searchResult);
     const newList = this.props.shares.add(props);
@@ -50,6 +84,27 @@ class ItemDetails extends Component {
     this.props.setLocalItemList(newList).then(() =>
       Alert.alert(
         'New item added',
+        'Changes saved',
+        [{ text: 'OK',
+          onPress: () => {
+            const resetAction = NavigationActions.reset({
+              index: 0,
+              actions: [
+                NavigationActions.navigate({ routeName: 'Shares' })
+              ]
+            });
+            this.props.navigation.dispatch(resetAction);
+          }
+        }],
+        { cancelable: false }
+      )
+    );
+  }
+  saveChanges() {
+    const updatedList = this.props.shares.update(this.state);
+    this.props.setLocalItemList(updatedList).then(() =>
+      Alert.alert(
+        'Item updated',
         'Changes saved',
         [{ text: 'OK',
           onPress: () => {
@@ -80,7 +135,7 @@ class ItemDetails extends Component {
       redLine,
       buyPrice, } = calc(this.state);
     const { searchResult, isLoadingDailyRates } = this.props;
-    const { cryptoCurrency, isCryptoCurrency, currency } = this.state;
+    const { cryptoCurrency, isCryptoCurrency, currency, isEditing } = this.state;
 
     if (isLoadingDailyRates) {
       return (
@@ -142,7 +197,7 @@ class ItemDetails extends Component {
             <Row header='Comission' value={`${totalCommission} ${currency}`} valueColor='#fab86b' />
             <Row header='Red line sell price' value={`${redLine} ${currency}`} valueColor='#ff1430' />
           </Summary>
-          <Button onPress={this.onSave.bind(this)} text='Save' type='blue' />
+          <Button onPress={isEditing ? this.saveChanges.bind(this) : this.addNew.bind(this)} text='Save' type='blue' />
         </View>
       </ScrollView>
     );

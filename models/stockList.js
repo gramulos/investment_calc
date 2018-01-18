@@ -12,7 +12,17 @@ export default class StockList {
     return JSON.stringify(this.list);
   }
   delete(id) {
-    this.list = this.list.filter(item => item.id !== id);
+    this.list = this.list.filter(listItem => listItem.id !== id);
+
+    if (this.list.legth === 0) {
+      return null;
+    }
+
+    return this;
+  }
+  update(item) {
+    const index = this.list.findIndex(listItem => listItem.id === item.id);
+    this.list.splice(index, 1, new StockItem(item));
     return this;
   }
   add(item) {
@@ -22,5 +32,8 @@ export default class StockList {
     }
     this.list.push(newItem);
     return this;
+  }
+  clear() {
+    return null;
   }
 }

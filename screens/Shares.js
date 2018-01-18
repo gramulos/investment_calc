@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { ActionCreators } from '../actions';
@@ -14,14 +14,16 @@ class Shares extends Component {
     return (
       <ScrollView style={layoutStyles.mainContainer}>
         <View style={[layoutStyles.container, listStyles.container]}>
-          {this.props.shares && this.props.shares.list.map(share => (
+          {(this.props.items && this.props.items.list.length > 0) ? this.props.items.list.map(item => (
             <ItemType
-              title={`${share.name} (${share.ticker})`}
-              subtitle={`Invested: ${(share.buyPrice * share.count).toFixed(2)} ${share.currency}\nShares count: ${share.count}`}
-              icon='btc'
-              key={share.ticker}
-              onPress={() => this.props.navigation.navigate('Calculator', { ...share })}
-            />))}
+              title={`${item.name} (${item.ticker})`}
+              subtitle={`Invested: ${(item.buyPrice * item.count).toFixed(2)} ${item.currency}\nShares count: ${item.count}`}
+              icon={item.icon}
+              key={item.ticker}
+              onPress={() => this.props.navigation.navigate('ItemDetails', { ...item, isEditing: true })}
+            />)) : <View style={layoutStyles.titleContainer}>
+              <Text style={layoutStyles.title}>Add your first element</Text>
+            </View>}
         </View>
       </ScrollView>
     );
@@ -30,7 +32,7 @@ class Shares extends Component {
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(ActionCreators, dispatch);
 const mapStateToProps = ({ local }) => ({
-  shares: local.shares,
+  items: local.shares,
   isReadingStorage: local.isReadingStorage,
 });
 
