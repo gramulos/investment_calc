@@ -145,7 +145,13 @@ class ItemDetails extends Component {
       );
     }
 
-    const title = isCryptoCurrency ? cryptoCurrency.name : searchResult.name;
+    let title = 'Title';
+
+    if (isEditing) {
+      title = this.state.name;
+    } else {
+      title = isCryptoCurrency ? cryptoCurrency.name : searchResult.name;
+    }
 
     return (
       <ScrollView style={layoutStyles.mainContainer}>

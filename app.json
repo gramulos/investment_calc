@@ -8,9 +8,9 @@
     "platforms": ["ios", "android"],
     "version": "1.0.2",
     "orientation": "default",
-    "icon": "./assets/icon2.png",
+    "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/testSplash.png",
+      "image": "./assets/splash.png",
       "backgroundColor": "#fff",
       "resizeMode": "cover"
     },
@@ -19,9 +19,10 @@
       "bundleIdentifier": "com.gramulos.investmentcalc"
     },
     "android": {
-      "versionCode": 2,
+      "versionCode": 4,
+      "icon": "./assets/android_icon.png",
       "package": "com.gramulos.investmentcalc",
       "permissions": []
-   }
+    }
   }
 }
