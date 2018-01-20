@@ -9,7 +9,7 @@ export default class StockItem {
       buyPrice = 0,
       sellPrice = 0,
       count = 0,
-      comission = 0,
+      commission = 0,
       interest = 0,
       commissionType = COMMISSION_FIXED,
       isCryptoCurrency = false,
@@ -23,7 +23,7 @@ export default class StockItem {
     this.buyPrice = buyPrice;
     this.sellPrice = sellPrice;
     this.count = count;
-    this.comission = comission;
+    this.commission = commission;
     this.interest = interest;
     this.interestType = interestType;
     this.commissionType = commissionType;
