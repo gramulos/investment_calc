@@ -25,3 +25,5 @@ export const arrayGroupBy = (array, prop) => {
 
   return sorted;
 };
+
+export const formatMoney = (number, currency) => `${number.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,')} ${currency}`;

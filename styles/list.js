@@ -2,9 +2,6 @@ import { StyleSheet, Dimensions } from 'react-native';
 import colors from './colors';
 
 export default StyleSheet.create({
-  container: {
-    marginTop: 10,
-  },
   icon: {
     position: 'absolute',
     width: 70,

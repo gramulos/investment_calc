@@ -1,9 +1,8 @@
 import React from 'react';
-import { Platform, StatusBar } from 'react-native';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { Platform, StatusBar, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import { StackNavigator } from 'react-navigation';
 
-import Calculator from '../screens/Calculator';
 import Shares from '../screens/Shares';
 import Add from '../screens/Add';
 import Edit from '../screens/Edit';
@@ -12,7 +11,13 @@ import SearchInCrypto from '../screens/Add/SearchInCrypto';
 import ChooseItemType from '../screens/Add/ChooseItemType';
 import ItemDetails from '../screens/Add/ItemDetails';
 
-import { layoutStyles } from '../styles';
+const styles = StyleSheet.create({
+  icon: {
+    marginRight: 15,
+    fontSize: 26,
+    color: '#ffffff',
+  }
+});
 
 const topNavigationBaseStyle = {
   headerTintColor: '#ffffff',
@@ -23,77 +28,68 @@ const topNavigationBaseStyle = {
     elevation: 0,
     shadowOpacity: 0,
   },
-  labelStyle: {
+  headerTitleStyle: {
     fontFamily: 'Roboto-300',
+    fontWeight: '300',
+    position: 'absolute',
+    justifyContent: 'center'
   },
 };
 
 export const Routes = StackNavigator({
-  Calculator: {
-    screen: Calculator,
-    navigationOptions: ({ navigation }) => Object.assign({}, {
-      title: navigation.state.params.ticker,
-      headerRight: (
-        <Ionicons
-          name='ios-settings'
-          style={layoutStyles.settingsIcon}
-          onPress={() => navigation.navigate('Edit', { ...navigation.state.params })}
-        />)
-    }, topNavigationBaseStyle),
-  },
   ChooseItemType: {
     screen: ChooseItemType,
-    navigationOptions: Object.assign({}, {
+    navigationOptions: ({
       title: 'Type',
-    }, topNavigationBaseStyle),
+    ...topNavigationBaseStyle }),
   },
   SearchInCrypto: {
     screen: SearchInCrypto,
-    navigationOptions: Object.assign({}, {
+    navigationOptions: ({
       title: 'Search',
-    }, topNavigationBaseStyle),
+    ...topNavigationBaseStyle }),
   },
   SearchInMarket: {
     screen: SearchInMarket,
-    navigationOptions: Object.assign({}, {
+    navigationOptions: ({
       title: 'Search',
-    }, topNavigationBaseStyle),
+    ...topNavigationBaseStyle }),
   },
   Add: {
     screen: Add,
-    navigationOptions: Object.assign({}, {
+    navigationOptions: ({
       title: 'Add new',
-    }, topNavigationBaseStyle),
+    ...topNavigationBaseStyle }),
   },
   Edit: {
     screen: Edit,
-    navigationOptions: Object.assign({}, {
+    navigationOptions: ({
       title: 'Edit details',
-    }, topNavigationBaseStyle),
+    ...topNavigationBaseStyle }),
   },
   ItemDetails: {
     screen: ItemDetails,
-    navigationOptions: ({ navigation }) => Object.assign({}, {
+    navigationOptions: ({ navigation }) => ({
       title: 'Details',
       headerRight: navigation.state.params.isEditing ? (
         <MaterialIcons
           name='delete'
-          style={layoutStyles.settingsIcon}
+          style={styles.icon}
           onPress={navigation.state.params.onPress}
         />) : null,
-    }, topNavigationBaseStyle),
+    ...topNavigationBaseStyle }),
   },
   Shares: {
     screen: Shares,
-    navigationOptions: ({ navigation }) => Object.assign({}, {
-      title: 'Shares',
+    navigationOptions: ({ navigation }) => ({
+      title: 'Wallet',
       headerRight: (
         <MaterialIcons
           name='add'
-          style={layoutStyles.settingsIcon}
+          style={styles.icon}
           onPress={() => navigation.navigate('ChooseItemType')}
-        />)
-    }, topNavigationBaseStyle),
+        />),
+      ...topNavigationBaseStyle }),
   }
 }, {
   cardStyle: {
